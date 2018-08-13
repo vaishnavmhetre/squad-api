@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -19,9 +20,13 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($post_id)
     {
-        //
+        $post = Post::findOrFail($post_id);
+
+	$comments = $post->comments()->latest()->get();
+
+	return response()->json($comments);
     }
 
     /**
@@ -47,12 +52,13 @@ class CommentController extends Controller
             'description' => 'required'
         ]);
         $post = Post::findOrFail($post_id);
-        $post->comments()->create([
+        $comment = Comment::create([
             'description' => $request->get('description'),
-            'user_id' => auth()->id()
+	    'post_id' => $post_id,
+            'user_id' => User::first()->id
         ]);
 
-        return response()->json($post);
+        return response()->json($comment);
     }
 
     /**

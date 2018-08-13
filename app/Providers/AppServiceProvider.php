@@ -15,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
     {
         /* Register Providers */
         $providers = [
-            \Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class
+            \Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class,
+            \Barryvdh\Cors\ServiceProvider::class,
+            \Laravel\Passport\PassportServiceProvider::class,
+            \Dusterio\LumenPassport\PassportServiceProvider::class
         ];
 
         foreach ($providers as $provider)
@@ -23,7 +26,8 @@ class AppServiceProvider extends ServiceProvider
 
     }
 
-    public function boot(){
+    public function boot()
+    {
 
         /* Load custom configs */
         /*$configs = [
@@ -32,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
 
         foreach ($configs as $config)
             app()->configure($config);*/
+
+        \Dusterio\LumenPassport\LumenPassport::routes($this->app);
+        \Dusterio\LumenPassport\LumenPassport::allowMultipleTokens();
 
     }
 }

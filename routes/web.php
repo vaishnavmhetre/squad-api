@@ -33,6 +33,8 @@ $router->group(['prefix' => 'posts'], function () use ($router) {
 
         $router->get('/', ['as' => 'posts.show', 'uses' => 'PostController@show']);
 
+        $router->get('/comments', ['as' => 'posts.comments.index', 'uses' => 'CommentController@index']);
+
         $router->post('/comments', ['as' => 'posts.comments.store', 'uses' => 'CommentController@store']);
 
         $router->group(['prefix' => 'likes'], function () use ($router) {
