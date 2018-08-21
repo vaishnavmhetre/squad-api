@@ -15,6 +15,12 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->group(['middleware' => 'auth:api'], function () use ($router){
+
+$router->get('/auth/user', function (){
+    return response()->json(Auth::user());	
+});
+
 $router->group(['prefix' => 'users'], function () use ($router) {
 
     $router->group(['prefix' => '{user_id}'], function () use ($router) {
@@ -62,6 +68,8 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
         });
 
     });
+
+});
 
 });
 
