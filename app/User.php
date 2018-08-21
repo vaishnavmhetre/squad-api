@@ -46,4 +46,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function likedComments(){
         return $this->morphedByMany(Comment::class, 'likeable');
     }
+
+    public function following(){
+        return $this->belongsToMany(User::class, 'following', 'follower_id', 'following_id');
+    }
+
+    public function followers(){
+        return $this->belongsToMany(User::class, 'following', 'following_id', 'follower_id');
+    }
+
+    public function followsUser($user_id)
+    {
+
+        if ($this->following()->where('following_id', $user_id)->first() == null)
+            return false;
+
+        return true;
+
+    }
 }

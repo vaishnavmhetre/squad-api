@@ -40,6 +40,12 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function showSelf()
+    {
+        $user = Auth::user();
+        return response()->json($user);
+    }
+
     /**
      * Update the specified resource in storage.
      *

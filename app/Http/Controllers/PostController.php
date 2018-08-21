@@ -31,7 +31,7 @@ class PostController extends Controller
 
         $post = Post::create([
             'description' => $request->get('description'),
-            'user_id' => auth()->id()
+            'user_id' => Auth::id()
         ]);
 
         return response()->json($post);
@@ -47,17 +47,6 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($post_id);
         return response()->json($post);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Post $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        //
     }
 
     /**

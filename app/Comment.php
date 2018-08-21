@@ -28,7 +28,7 @@ class Comment extends Model
     {
         $user_id = $user_id != null ? $user_id : Auth::id();
 
-        if ($this->likers()->where('user_id', Auth::id())->first() == null)
+        if ($this->likers()->where('user_id', $user_id)->first() == null)
             return false;
 
         return true;

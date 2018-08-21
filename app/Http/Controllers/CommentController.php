@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Comment;
 use App\Post;
 use App\User;
@@ -24,20 +25,12 @@ class CommentController extends Controller
     {
         $post = Post::findOrFail($post_id);
 
-	$comments = $post->comments()->latest()->get();
+        $comments = $post->comments()->latest()->get();
 
-	return response()->json($comments);
+        return response()->json($comments);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -55,32 +48,10 @@ class CommentController extends Controller
         $comment = Comment::create([
             'description' => $request->get('description'),
 	    'post_id' => $post_id,
-            'user_id' => User::first()->id
+            'user_id' => Auth::id()
         ]);
 
         return response()->json($comment);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Comment $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Comment $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Comment $comment)
-    {
-        //
     }
 
     /**

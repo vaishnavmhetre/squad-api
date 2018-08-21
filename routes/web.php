@@ -23,11 +23,29 @@ $router->get('/auth/user', function (){
 
 $router->group(['prefix' => 'users'], function () use ($router) {
 
+    $router->group(['prefix' => 'me'], function () use ($router) {
+
+        $router->get('/', ['as' => 'users.self.show', 'uses' => 'UserController@show']);
+
+        $router->get('/followers', ['as' => 'users.self.followers.show', 'uses' => 'FollowsController@getSelfFollowers']);
+
+        $router->get('/following', ['as' => 'users.self.following.show', 'uses' => 'FollowsController@getSelfFollowing']);
+
+        $router->post('/follow', ['as' => 'users.self.follow.toggle', 'uses' => 'FollowsController@toggleFollow']);
+
+    });
+
     $router->group(['prefix' => '{user_id}'], function () use ($router) {
 
         $router->get('/', ['as' => 'users.show', 'uses' => 'UserController@show']);
 
+        $router->get('/followers', ['as' => 'users.followers.show', 'uses' => 'FollowsController@getFollowers']);
+
+        $router->get('/following', ['as' => 'users.following.show', 'uses' => 'FollowsController@getFollowing']);
+
     });
+
+    
 
 });
 
@@ -71,5 +89,9 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
 
 });
 
+<<<<<<< Updated upstream
 });
+=======
+
+>>>>>>> Stashed changes
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Comment;
 use App\Post;
 use Illuminate\Http\Request;
@@ -24,12 +25,16 @@ class LikeController extends Controller
             /* Has liked the post, unlike it */
             $post->likers()->detach(Auth::id());
 
+            $response = 0;
+
         } else {
             /* Hasn't liked the post, like it */
             $post->likers()->attach(Auth::id());
+
+            $response = 1;
         }
 
-        return response()->json('');
+        return response()->json($response);
     }
 
     public function toggleCommentLike(Request $request, $comment_id)
@@ -37,16 +42,23 @@ class LikeController extends Controller
 
         $comment = Comment::findOrFail($comment_id);
 
+        $response = -1;
+
         if ($comment->likedByUser()) {
+
             /* Has liked the post, dislike it */
             $comment->likers()->detach(Auth::id());
+
+            $response = 0;
         } else {
+
             /* Hasn't liked the post, like it */
             $comment->likers()->attach(Auth::id());
-
+            
+            $response = 1;
         }
 
-        return redirect()->back();
+        return response()->json($response);
     }
 
     public function getPostLikes($post_id)
