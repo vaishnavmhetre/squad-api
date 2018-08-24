@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +61,7 @@ class FollowsController extends Controller
         $currentUser = Auth::user();
 
         if($currentUser->id === $userToFolllowId)
-            return response()->json("That's not possibe", Response::HTTP_UNPROCESSABLE_ENTITY)
+            return response()->json("That's not possibe", Response::HTTP_UNPROCESSABLE_ENTITY);
 
         if ($currentUser->followsUser($userToFolllowId)) {
             /* Has followed, unfollow */
