@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Post;
 use Illuminate\Http\Request;
 
@@ -70,5 +71,26 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         //
+    }
+
+
+    public function getSelfPosts(){
+
+        $user = Auth::user();
+
+        $posts = $user->posts;
+
+        return response()->json($posts);
+
+    }
+
+    public function getPosts($user_id){
+
+        $user = User::findOrFail($user_id);
+
+        $posts = $user->$posts;
+
+        return response()->json($posts);
+
     }
 }

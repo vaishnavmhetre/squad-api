@@ -29,9 +29,11 @@ $router->group(['middleware' => 'auth:api'], function () use ($router){
 
             $router->get('/followers', ['as' => 'users.self.followers.show', 'uses' => 'FollowsController@getSelfFollowers']);
 
-            $router->get('/following', ['as' => 'users.self.following.show', 'uses' => 'FollowsController@getSelfFollowing']);
+            $router->get('/followings', ['as' => 'users.self.following.show', 'uses' => 'FollowsController@getSelfFollowing']);
 
             $router->post('/follow', ['as' => 'users.self.follow.toggle', 'uses' => 'FollowsController@toggleFollow']);
+
+            $router->get('/posts', ['as' => 'users.self.posts.show', 'uses' => 'PostController@getSelfPosts']);
 
         });
 
@@ -43,9 +45,11 @@ $router->group(['middleware' => 'auth:api'], function () use ($router){
 
             $router->get('/following', ['as' => 'users.following.show', 'uses' => 'FollowsController@getFollowing']);
 
+            $router->get('/posts', ['as' => 'users.posts.show', 'uses' => 'PostController@getPosts']);
+
         });
 
-        
+
 
     });
 
