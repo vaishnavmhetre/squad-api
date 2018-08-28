@@ -43,7 +43,7 @@ $router->group(['middleware' => 'auth:api'], function () use ($router){
 
             $router->get('/followers', ['as' => 'users.followers.show', 'uses' => 'FollowsController@getFollowers']);
 
-            $router->get('/following', ['as' => 'users.following.show', 'uses' => 'FollowsController@getFollowing']);
+            $router->get('/followings', ['as' => 'users.following.show', 'uses' => 'FollowsController@getFollowing']);
 
             $router->get('/posts', ['as' => 'users.posts.show', 'uses' => 'PostController@getPosts']);
 

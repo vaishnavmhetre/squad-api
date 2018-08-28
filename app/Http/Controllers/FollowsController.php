@@ -56,12 +56,12 @@ class FollowsController extends Controller
             'user_id' => 'required|exists:users,id'
         ]);
         
-        $userToFolllowId = User::findOrFail($user_id)->id;
+        $userToFolllowId = User::findOrFail($request->user_id)->id;
         
         $currentUser = Auth::user();
 
         if($currentUser->id === $userToFolllowId)
-            return response()->json("That's not possibe", Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json("That's not possible", Response::HTTP_UNPROCESSABLE_ENTITY);
 
         if ($currentUser->followsUser($userToFolllowId)) {
             /* Has followed, unfollow */

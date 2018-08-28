@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Post;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\User;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
@@ -15,7 +18,18 @@ class PostController extends Controller
      */
     public function index()
     {
-        return response()->json(Post::latest()->get());
+        $user = Auth::user();
+        $followings = $user->following;
+        if (count($followings) < 3)
+            return response()->json('Less than 3 following', Response::HTTP_EXPECTATION_FAILED);
+        $posts = new Collection;
+        $user->load('following.posts');
+        foreach ($user->following as $following)
+            $posts = $posts->merge($following->posts);
+
+        $posts = $posts->unique();
+
+        return response()->json($posts);
     }
 
     /**
@@ -88,7 +102,7 @@ class PostController extends Controller
 
         $user = User::findOrFail($user_id);
 
-        $posts = $user->$posts;
+        $posts = $user->posts;
 
         return response()->json($posts);
 
