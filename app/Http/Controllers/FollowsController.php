@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\FollowNotification;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
@@ -55,23 +56,27 @@ class FollowsController extends Controller
         $this->validate($request, [
             'user_id' => 'required|exists:users,id'
         ]);
+
+        $userToFollow = User::findOrFail($request->user_id);
         
-        $userToFolllowId = User::findOrFail($request->user_id)->id;
+        $userToFollowId = $userToFollow->id;
         
         $currentUser = Auth::user();
 
-        if($currentUser->id === $userToFolllowId)
+        if($currentUser->id === $userToFollowId)
             return response()->json("That's not possible", Response::HTTP_UNPROCESSABLE_ENTITY);
 
-        if ($currentUser->followsUser($userToFolllowId)) {
+        if ($currentUser->followsUser($userToFollowId)) {
             /* Has followed, unfollow */
-            $currentUser->following()->detach($userToFolllowId);
+            $currentUser->following()->detach($userToFollowId);
 
             $response = 0;
 
         } else {
             /* Hasn't liked the post, like it */
-            $currentUser->following()->attach($userToFolllowId);
+            $currentUser->following()->attach($userToFollowId);
+
+            $userToFollow->notify(new FollowNotification($currentUser));
 
             $response = 1;
         }

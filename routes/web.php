@@ -11,14 +11,16 @@
 |
 */
 
+use Symfony\Component\HttpFoundation\Response;
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group(['middleware' => 'auth:api'], function () use ($router){
+$router->group(['middleware' => 'auth:api'], function () use ($router) {
 
-    $router->get('/auth/user', function (){
-        return response()->json(Auth::user());	
+    $router->get('/auth/user', function () {
+        return response()->json(Auth::user());
     });
 
     $router->group(['prefix' => 'users'], function () use ($router) {
@@ -35,6 +37,16 @@ $router->group(['middleware' => 'auth:api'], function () use ($router){
 
             $router->get('/posts', ['as' => 'users.self.posts.show', 'uses' => 'PostController@getSelfPosts']);
 
+            $router->group(['prefix' => 'notifications'], function () use ($router) {
+
+                $router->get('/', ['as' => 'users.self.notifications.show', 'uses' => 'NotificationsController@index']);
+
+                $router->post('/markasread', 'NotificationsController@markAsRead');
+
+                $router->post('/markasread/all', 'NotificationsController@markAllAsRead');
+
+
+            });
         });
 
         $router->group(['prefix' => '{user_id}'], function () use ($router) {
@@ -48,7 +60,6 @@ $router->group(['middleware' => 'auth:api'], function () use ($router){
             $router->get('/posts', ['as' => 'users.posts.show', 'uses' => 'PostController@getPosts']);
 
         });
-
 
 
     });
@@ -91,6 +102,35 @@ $router->group(['middleware' => 'auth:api'], function () use ($router){
 
         });
 
+    });
+
+    $router->get('/test/notifications', function () {
+        return response()->json(App\User::find(7)->notifications);
+    });
+
+    $router->get('/test/notifications/unread', function () {
+        return response()->json(App\User::find(7)->unreadNotifications);
+    });
+
+    $router->post('/test/notifications/markasread/all', function (\Illuminate\Http\Request $request) {
+        $unreadNotifications = App\User::findOrFail(7)->unreadNotifications;
+
+        if (count($unreadNotifications) > 0)
+            $unreadNotifications->markAsRead();
+        else
+            return response()->json('No notifications to mark as read', Response::HTTP_NOT_ACCEPTABLE);
+
+        return response()->json('All notifications marked as read', Response::HTTP_OK);
+    });
+
+    $router->post('/test/notifications/markasread', function (\Illuminate\Http\Request $request) {
+        $this->validate($request, [
+            'notification_id' => 'required|exists:notifications,id'
+        ]);
+
+        $notification = App\User::findOrFail(7)->unreadNotifications()->findOrFail($request->notification_id);
+        $notification->markAsRead();
+        return response()->json($notification, Response::HTTP_OK);
     });
 
 });
